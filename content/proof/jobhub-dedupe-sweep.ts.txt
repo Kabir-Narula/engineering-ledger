@@ -1,0 +1,76 @@
+/**
+ * Two-phase duplicate sweep:
+ *   phase 1 — same city + normalized title with fuzzy company match
+ *   phase 2 — same (source, sourceId): one posting retitled/relisted
+ * Pool = non-merged jobs that are active OR hold applications/documents
+ * (catches: applied job went stale, dupe still live and showing as "new").
+ * Groups with no active row are skipped (nothing visible to fix).
+ * Winner = active, then longest description, then earliest firstSeenAt.
+ * Applications/documents/interaction state move to the winner; losers get
+ * isActive=false + mergedAt/mergedIntoId so polls never resurrect them
+ * (a touch on a loser forwards to the winner instead).
+ */
+export async function sweepDuplicates(opts: {
+  dry?: boolean;
+  log?: (msg: string) => void;
+} = {}): Promise<SweepStats> {
+  const log = opts.log ?? (() => {});
+  const stats: SweepStats = { mergedGroups: 0, deactivated: 0, appsMoved: 0, docsMoved: 0, appsCollapsed: 0 };
+
+  // ⋯ candidate pool query elided ⋯
+
+  async function mergeComponent(comp: Row[], label: string): Promise<void> {
+    if (comp.length < 2) return;
+    if (!comp.some((r) => r.isActive)) return;
+    comp.sort((a, b) =>
+      Number(b.isActive) - Number(a.isActive) ||
+      b.description.length - a.description.length ||
+      a.firstSeenAt.getTime() - b.firstSeenAt.getTime()
+    );
+    const winner = comp[0];
+    const losers = comp.slice(1);
+
+    // ⋯ per-loser merge: applications re-pointed, documents re-versioned on
+    //    (kind, version) conflict, interaction state carried over, loser
+    //    deactivated with mergedAt/mergedIntoId ⋯
+
+    // several losers may have carried their own Application rows onto the winner
+    // (user clicked "applied" on two copies of the same job) -> collapse to one.
+    const apps = await prisma.application.findMany({
+      where: { jobId: winner.id },
+      orderBy: { appliedAt: "asc" },
+      include: { _count: { select: { documents: true } } },
+    });
+    // ⋯ collapse: highest-status survivor keeps documents + merged notes ⋯
+  }
+
+  // ---- phase 1: city + normTitle groups, union-find by companiesMatch ----
+  const groups = new Map<string, Row[]>();
+  for (const r of rows) {
+    if (!r.normTitle) continue;
+    const key = `${r.city.toLowerCase()}|${r.normTitle}`;
+    const arr = groups.get(key) ?? [];
+    arr.push(r);
+    groups.set(key, arr);
+  }
+  for (const arr of groups.values()) {
+    if (arr.length < 2) continue;
+    const components: Row[][] = [];
+    for (const r of arr) {
+      const hits = components.filter((comp) => comp.some((c) => companiesMatch(c.company, r.company)));
+      if (hits.length === 0) {
+        components.push([r]);
+      } else {
+        const merged = hits.flat().concat(r);
+        for (const h of hits) components.splice(components.indexOf(h), 1);
+        components.push(merged);
+      }
+    }
+    for (const comp of components) await mergeComponent(comp, "fuzzy");
+  }
+
+  // ---- phase 2: same (source, sourceId) ----
+  // ⋯ identical merge pass keyed on `${r.source}|${r.sourceId}` ⋯
+
+  return stats;
+}

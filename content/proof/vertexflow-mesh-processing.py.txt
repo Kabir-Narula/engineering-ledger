@@ -1,0 +1,106 @@
+"""Headless Blender helpers for the ``POST /process-mesh`` route.
+
+The worker runs ``bpy`` as a long-lived Python module rather than
+spawning a subprocess per job. That keeps per-request latency low but
+means Blender's global ``bpy.data`` state is *shared across requests*.
+Two invariants protect against memory leaks and cross-job pollution:
+
+1. Every job begins with ``bpy.ops.wm.read_factory_settings`` — this
+   wipes the scene, datablocks, and any orphaned meshes from prior runs.
+2. After measuring, we explicitly call ``bpy.data.orphans_purge`` so
+   that asset data unreferenced by the cleared scene is freed
+   immediately instead of waiting for the next implicit GC pass.
+
+The functions in this module are deliberately *synchronous* — ``bpy``
+holds the GIL aggressively, so async wrappers add overhead without
+parallelism. The FastAPI route runs them in a worker thread instead.
+"""
+
+_DOWNLOAD_TIMEOUT_SECONDS = 60.0
+_MAX_BYTES = 256 * 1024 * 1024  # 256 MB hard cap — protects worker RAM.
+
+
+def download_to_temp_file(storage_url: str, suffix: str) -> Path:
+    """Stream ``storage_url`` to a temp file and return its filesystem path.
+
+    Streaming (rather than ``.read()``) keeps peak memory bounded for
+    large GLB blobs. The size cap is enforced incrementally so we abort
+    before allocating ridiculous payloads.
+    """
+    with httpx.stream("GET", storage_url, timeout=_DOWNLOAD_TIMEOUT_SECONDS) as response:
+        response.raise_for_status()
+
+        tmp = NamedTemporaryFile(prefix="vf_mesh_", suffix=suffix, delete=False)
+        bytes_written = 0
+        try:
+            for chunk in response.iter_bytes():
+                bytes_written += len(chunk)
+                if bytes_written > _MAX_BYTES:
+                    raise ValueError(
+                        f"Refusing to download asset larger than {_MAX_BYTES} bytes."
+                    )
+                tmp.write(chunk)
+        finally:
+            tmp.close()
+        return Path(tmp.name)
+
+
+@contextmanager
+def _isolated_blender_scene() -> Iterator[None]:
+    """Reset Blender state before *and* after the block runs."""
+    import bpy  # Imported lazily so non-Blender environments can still import this module.
+
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    try:
+        yield
+    finally:
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+        bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
+
+
+def process_mesh(
+    storage_url: str,
+    fmt: MeshFormat,
+    asset_version_id: str | None,
+) -> ProcessMeshResponse:
+    """End-to-end pipeline: download → import → measure → cleanup.
+
+    Synchronous; intended to be dispatched onto a worker thread by the
+    FastAPI route (``await run_in_threadpool(process_mesh, …)``).
+    """
+    if _mesh_stub_enabled():
+        return _stub_process_mesh(storage_url, fmt, asset_version_id)
+
+    started = time.monotonic()
+    suffix = _suffix_for_format(fmt, storage_url)
+    local_path = download_to_temp_file(storage_url, suffix)
+    try:
+        with _isolated_blender_scene():
+            _import_into_scene(local_path, fmt)
+            polycount, vertex_count, object_count, bbox = _measure_current_scene()
+    finally:
+        # The Blender scene is wiped by the context manager — only the
+        # on-disk temp file remains to clean up here.
+        try:
+            local_path.unlink(missing_ok=True)
+        except OSError:
+            logger.warning("mesh.tempfile_unlink_failed", path=str(local_path))
+
+    duration_ms = int((time.monotonic() - started) * 1000)
+    logger.info(
+        "mesh.processed",
+        polycount=polycount,
+        vertex_count=vertex_count,
+        object_count=object_count,
+        duration_ms=duration_ms,
+        asset_version_id=asset_version_id,
+    )
+    return ProcessMeshResponse(
+        asset_version_id=asset_version_id,
+        format=fmt,
+        polycount=polycount,
+        vertex_count=vertex_count,
+        object_count=object_count,
+        bounding_box=bbox,
+        duration_ms=duration_ms,
+    )

@@ -1,0 +1,94 @@
+interface DetectedPattern {
+  type: 'temporal' | 'activity' | 'theme' | 'correlation'
+  name: string
+  description: string
+  confidence: number
+  evidence: PatternEvidence
+  insights: string
+  suggestions: string
+}
+
+export class PatternDetectionService {
+  /**
+   * Gather comprehensive user data for analysis
+   */
+  private static async gatherUserData(userId: string, days: number) {
+    // Use Toronto timezone for consistent date boundaries
+    const since = subDays(new Date(), days)
+
+    // Fetch all relevant data in parallel
+    const [journalEntries, moodEntries, goals, dayLogs] = await Promise.all([
+      prisma.journalEntry.findMany({
+        where: { userId, createdAt: { gte: since } },
+        orderBy: { createdAt: 'asc' },
+        select: {
+          id: true, title: true, content: true, moodRating: true,
+          sentiment: true, sentimentLabel: true, activities: true, createdAt: true,
+        },
+      }),
+      prisma.moodEntry.findMany({
+        where: { userId, createdAt: { gte: since } },
+        orderBy: { createdAt: 'asc' },
+        select: { moodScore: true, triggers: true, createdAt: true },
+      }),
+      prisma.goal.findMany({
+        where: { userId, createdAt: { gte: since } },
+        select: { title: true, completed: true, createdAt: true },
+      }),
+      prisma.dayLog.findMany({
+        where: { userId, date: { gte: since } },
+        orderBy: { date: 'asc' },
+        select: { date: true, morningIntention: true, dailyInsight: true, suggestedAction: true },
+      }),
+    ])
+
+    return { entries: journalEntries, moods: moodEntries, goals, dayLogs }
+  }
+
+  // ⋯ detectPatternsWithAI: JSON-mode completion, parseAIJSON fallback ⋯
+
+  /**
+   * Save detected patterns to database
+   */
+  static async savePatterns(userId: string, patterns: DetectedPattern[]) {
+    // 1. Archive existing active patterns
+    await prisma.pattern.updateMany({
+      where: { userId, isActive: true },
+      data: { isActive: false },
+    })
+
+    // 2. CLEANUP: Delete old inactive patterns (older than 60 days) to prevent "Zombie Data"
+    const cleanupDate = new Date()
+    cleanupDate.setDate(cleanupDate.getDate() - 60)
+
+    // We run this asynchronously and don't wait for it to prevent slowing down the main request
+    prisma.pattern.deleteMany({
+      where: {
+        userId,
+        isActive: false,
+        createdAt: { lt: cleanupDate }
+      }
+    }).catch(err => console.error('Pattern cleanup failed:', err))
+
+    // 3. Create new patterns
+    const createdPatterns = await Promise.all(
+      patterns.map((pattern) =>
+        prisma.pattern.create({
+          data: {
+            userId,
+            type: pattern.type,
+            name: pattern.name,
+            description: pattern.description,
+            confidence: pattern.confidence,
+            evidence: pattern.evidence as any, // JSON type casting
+            insights: pattern.insights,
+            suggestions: pattern.suggestions,
+            isActive: true,
+          },
+        })
+      )
+    )
+
+    return createdPatterns
+  }
+}
