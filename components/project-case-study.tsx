@@ -23,19 +23,8 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
     <article
       id={`project-${project.id}`}
       aria-labelledby={`project-${project.id}-title`}
-      className="relative scroll-mt-20 border-t border-hairline py-10 first:border-t-0 first:pt-0"
+      className="scroll-mt-20 border-t border-hairline py-10 first:border-t-0 first:pt-0"
     >
-      {/* Ledger watermark — the entry's folio number, set ghost-large
-          behind the content (z-layered, never over text) */}
-      <span
-        aria-hidden="true"
-        style={{ color: "var(--ink-ghost)" }}
-        className="pointer-events-none absolute -top-2 right-0 z-0 select-none font-display text-[6.5rem] font-medium leading-none"
-      >
-        {project.index}
-      </span>
-
-      <div className="relative z-[1]">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <span className="font-mono text-[11px] tracking-ledger text-copper">
           {project.index}
@@ -128,7 +117,6 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
             <ArchFlow labels={project.archLabels} />
           </div>
         </details>
-      </div>
       </div>
     </article>
   );

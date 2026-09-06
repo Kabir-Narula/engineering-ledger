@@ -16,7 +16,6 @@
   --ink: oklch(0.265 0.014 65);
   --ink-soft: oklch(0.42 0.014 68);
   --ink-faint: oklch(0.565 0.012 72);
-  --ink-ghost: oklch(0.265 0.014 65 / 0.055);
 
   /* Hairlines */
   --hairline: oklch(0.265 0.014 65 / 0.13);
@@ -44,7 +43,6 @@
   --ink: oklch(0.905 0.010 88);
   --ink-soft: oklch(0.76 0.012 82);
   --ink-faint: oklch(0.585 0.012 76);
-  --ink-ghost: oklch(0.905 0.010 88 / 0.06);
 
   --hairline: oklch(0.905 0.010 88 / 0.14);
   --hairline-strong: oklch(0.905 0.010 88 / 0.30);
@@ -249,64 +247,50 @@ details.ledger[open] > summary .ledger-marker {
 }
 
 /* ------------------------------------------------------------------ */
-/* Architecture circuit — current flows, glow passes node to node      */
+/* Architecture circuit — one scaled SVG rail, current running along   */
 /* ------------------------------------------------------------------ */
 
-.arch-chain {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.arch-rail {
+  stroke: var(--hairline-strong);
+  stroke-width: 1.5;
 }
 
-.arch-stage {
-  display: flex;
-  align-items: center;
-  opacity: 0;
-  animation: arch-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i) * 0.16s + 0.1s);
+.arch-rail-flow {
+  stroke: var(--copper);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 4 8;
+  animation: arch-current 0.7s linear infinite;
 }
 
-/* Connector — animated current running between nodes */
-.arch-stage + .arch-stage::before {
-  content: "";
-  width: 30px;
-  height: 2px;
-  margin: 0 7px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--copper) 0 5px,
-    transparent 5px 10px
-  );
-  background-size: 10px 2px;
-  animation: arch-current 0.55s linear infinite;
+.arch-arrow {
+  fill: var(--copper);
 }
 
-.arch-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  border: 1px solid var(--hairline-strong);
-  border-radius: 3px;
-  background: var(--paper);
-  padding: 6px 10px;
+.arch-ring {
+  fill: var(--paper);
+  stroke: var(--hairline-strong);
+  stroke-width: 1.5;
+  animation: arch-ringpulse 4.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.arch-num {
+  fill: var(--copper);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
-  color: var(--ink);
-  white-space: nowrap;
-  animation: arch-glow 4.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  animation-delay: calc(var(--i) * 0.84s);
+  font-size: 8.5px;
+  text-anchor: middle;
 }
 
-.arch-idx {
-  color: var(--copper);
-  font-size: 9px;
+.arch-cap {
+  fill: var(--ink-soft);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-anchor: middle;
 }
 
 .arch-live-dot {
+  display: inline-block;
   width: 6px;
   height: 6px;
   border-radius: 999px;
@@ -315,60 +299,27 @@ details.ledger[open] > summary .ledger-marker {
 }
 
 @keyframes arch-current {
-  to { background-position: 10px 0; }
+  to { stroke-dashoffset: -12; }
 }
 
-@keyframes arch-in {
-  from { opacity: 0; transform: translateX(-6px); }
-  to { opacity: 1; transform: none; }
-}
-
-@keyframes arch-glow {
+@keyframes arch-ringpulse {
   0%, 100% {
-    border-color: var(--hairline-strong);
-    box-shadow: 0 0 0 0 transparent;
+    stroke: var(--hairline-strong);
+    stroke-width: 1.5;
   }
   8% {
-    border-color: var(--copper);
-    box-shadow: 0 0 10px 1px var(--copper-faint);
+    stroke: var(--copper);
+    stroke-width: 2.5;
   }
-  20% {
-    border-color: var(--hairline-strong);
-    box-shadow: 0 0 0 0 transparent;
+  22% {
+    stroke: var(--hairline-strong);
+    stroke-width: 1.5;
   }
 }
 
 @keyframes arch-live {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.25; }
-}
-
-/* Narrow containers: the trace folds downward before it can wrap,
-   so no row ever opens with a dangling connector */
-.arch-box {
-  container-type: inline-size;
-}
-
-@container (max-width: 820px) {
-  .arch-chain {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .arch-stage + .arch-stage::before {
-    width: 2px;
-    height: 18px;
-    margin: 5px 0 5px 16px;
-    background: repeating-linear-gradient(
-      180deg,
-      var(--copper) 0 5px,
-      transparent 5px 10px
-    );
-    background-size: 2px 10px;
-    animation-name: arch-current-v;
-  }
-  @keyframes arch-current-v {
-    to { background-position: 0 10px; }
-  }
 }
 
 /* ------------------------------------------------------------------ */
