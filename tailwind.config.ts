@@ -30,19 +30,10 @@ const config: Config = {
           faint: "var(--copper-faint)",
         },
         mineral: "var(--mineral)",
-        editor: {
-          DEFAULT: "var(--editor)",
-          raised: "var(--editor-raised)",
-          sunken: "var(--editor-sunken)",
-          ink: "var(--editor-ink)",
-          soft: "var(--editor-soft)",
-          faint: "var(--editor-faint)",
-        },
       },
       borderColor: {
         hairline: "var(--hairline)",
         "hairline-strong": "var(--hairline-strong)",
-        "editor-line": "var(--editor-line)",
       },
       fontFamily: {
         display: ["var(--font-display)", "Georgia", "serif"],

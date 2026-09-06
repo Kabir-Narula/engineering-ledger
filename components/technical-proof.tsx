@@ -8,9 +8,7 @@ import { VisualCollab } from "@/components/visual-collab";
 import { VisualSm2 } from "@/components/visual-sm2";
 import type { Project } from "@/types/project";
 
-export interface ProjectWithCode extends Project {
-  code: string;
-}
+export type ProjectWithCode = Project;
 
 interface TechnicalProofProps {
   projects: ProjectWithCode[];

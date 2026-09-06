@@ -26,9 +26,30 @@ export function ProjectLedger({ projects }: ProjectLedgerProps) {
         </h2>
         <p className="mt-3 max-w-measure text-[14.5px] leading-relaxed text-ink-soft">
           Chosen from 43 public repositories for architectural depth. The
-          pane on the right shows a real artifact from each repository as
-          you read — the same file, linked, on GitHub.
+          pane on the right follows your scroll with the real interface,
+          rotating engineering notes, and the source file on GitHub.
         </p>
+        {/* Jump straight to a system — the ledger's table of contents */}
+        <nav aria-label="Case studies" className="mt-5">
+          <ul className="flex flex-wrap gap-x-1 gap-y-1.5 font-mono text-[11px] tracking-wide">
+            {projects.map((project, i) => (
+              <li key={project.id} className="flex items-center">
+                {i > 0 ? (
+                  <span aria-hidden="true" className="mx-2 text-ink-faint">
+                    ·
+                  </span>
+                ) : null}
+                <a
+                  href={`#project-${project.id}`}
+                  className="text-ink-faint underline-offset-4 transition-colors hover:text-copper hover:underline"
+                >
+                  <span className="text-copper">{project.index}</span>{" "}
+                  {project.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </header>
 
       {projects.map((project) => (

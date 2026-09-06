@@ -60,13 +60,7 @@ export const projects: Project[] = [
       outcome:
         "Pipeline engineering with real guarantees: failure isolation, idempotent merging, deterministic documents, and honest third-party ToS boundaries.",
     },
-    technicalProof: {
-      excerptFile: "jobhub-dedupe-sweep.ts.txt",
-      filePath: "lib/dedupe-sweep.ts",
-      language: "typescript",
-      annotation:
-        "Two-phase duplicate sweep — union-find over fuzzy company matches, then a same-source-ID pass. Losers are deactivated with a merge pointer so polls never resurrect them.",
-    },
+    technicalProof: { filePath: "lib/dedupe-sweep.ts" },
   },
   {
     id: "vertexflow",
@@ -119,13 +113,7 @@ export const projects: Project[] = [
       outcome:
         "Genuine systems range: polyglot services, queue-optional orchestration, object-storage uploads, and careful resource management around a native engine.",
     },
-    technicalProof: {
-      excerptFile: "vertexflow-mesh-processing.py.txt",
-      filePath: "apps/worker/app/mesh_processing.py",
-      language: "python",
-      annotation:
-        "Headless-Blender mesh pipeline — streamed, size-capped download; scene isolation around shared bpy state; synchronous by design because of the GIL.",
-    },
+    technicalProof: { filePath: "apps/worker/app/mesh_processing.py" },
   },
   {
     id: "axom",
@@ -173,13 +161,7 @@ export const projects: Project[] = [
       outcome:
         "Algorithmic literacy applied to a real product: the scheduling core is small, correct, and fully owned — and the product degrades gracefully without an LLM.",
     },
-    technicalProof: {
-      excerptFile: "axom-sm2.ts.txt",
-      filePath: "src/lib/learning/sm2.ts",
-      language: "typescript",
-      annotation:
-        "Complete SM-2 scheduler (Wozniak, 1987) with lapse handling — plus a retrievability estimate from the exponential forgetting curve, used for mastery scoring.",
-    },
+    technicalProof: { filePath: "src/lib/learning/sm2.ts" },
   },
   {
     id: "bettermind",
@@ -228,13 +210,7 @@ export const projects: Project[] = [
       outcome:
         "ML features shipped with adult supervision: data minimization before inference, structured outputs, lifecycle hygiene, and access control on every mutation.",
     },
-    technicalProof: {
-      excerptFile: "bettermind-pattern-detection.ts.txt",
-      filePath: "lib/pattern-detection.ts",
-      language: "typescript",
-      annotation:
-        "Pattern-detection service — parallel 28-day data gathering, anonymized summarization before inference, and archive-then-purge lifecycle for detected patterns.",
-    },
+    technicalProof: { filePath: "lib/pattern-detection.ts" },
   },
   {
     id: "treminy",
@@ -284,12 +260,6 @@ export const projects: Project[] = [
       outcome:
         "Full-stack breadth: realtime transport, relational modeling, billing, and authz — the unglamorous pieces that decide whether a product survives users.",
     },
-    technicalProof: {
-      excerptFile: "treminy-socket-io.ts.txt",
-      filePath: "src/pages/api/socket/io.ts",
-      language: "typescript",
-      annotation:
-        "The entire realtime edge: Socket.IO attached to Next's HTTP server, room-per-document, delta and cursor fan-out — small surface, correct by being boring.",
-    },
+    technicalProof: { filePath: "src/pages/api/socket/io.ts" },
   },
 ];

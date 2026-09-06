@@ -16,6 +16,7 @@
   --ink: oklch(0.265 0.014 65);
   --ink-soft: oklch(0.42 0.014 68);
   --ink-faint: oklch(0.565 0.012 72);
+  --ink-ghost: oklch(0.265 0.014 65 / 0.055);
 
   /* Hairlines */
   --hairline: oklch(0.265 0.014 65 / 0.13);
@@ -28,15 +29,6 @@
 
   /* Secondary — subtle mineral green, used sparingly */
   --mineral: oklch(0.50 0.045 165);
-
-  /* Syntax tokens — tuned for the light paper code panel */
-  --syn-keyword: oklch(0.50 0.115 45);
-  --syn-string: oklch(0.47 0.07 160);
-  --syn-comment: oklch(0.60 0.012 72);
-  --syn-number: oklch(0.55 0.10 70);
-  --syn-fn: oklch(0.42 0.06 250);
-  --syn-type: oklch(0.48 0.07 200);
-  --syn-operator: oklch(0.52 0.06 30);
 
   color-scheme: light;
 }
@@ -52,6 +44,7 @@
   --ink: oklch(0.905 0.010 88);
   --ink-soft: oklch(0.76 0.012 82);
   --ink-faint: oklch(0.585 0.012 76);
+  --ink-ghost: oklch(0.905 0.010 88 / 0.06);
 
   --hairline: oklch(0.905 0.010 88 / 0.14);
   --hairline-strong: oklch(0.905 0.010 88 / 0.30);
@@ -61,14 +54,6 @@
   --copper-faint: oklch(0.705 0.11 50 / 0.18);
 
   --mineral: oklch(0.70 0.05 165);
-
-  --syn-keyword: oklch(0.72 0.12 50);
-  --syn-string: oklch(0.72 0.08 160);
-  --syn-comment: oklch(0.60 0.012 75);
-  --syn-number: oklch(0.74 0.10 72);
-  --syn-fn: oklch(0.75 0.07 250);
-  --syn-type: oklch(0.72 0.08 200);
-  --syn-operator: oklch(0.72 0.06 32);
 
   color-scheme: dark;
 }
@@ -104,18 +89,6 @@ body {
   outline-offset: 3px;
   border-radius: 1px;
 }
-
-/* ------------------------------------------------------------------ */
-/* Syntax tokens                                                       */
-/* ------------------------------------------------------------------ */
-
-.tok-keyword { color: var(--syn-keyword); font-weight: 500; }
-.tok-string { color: var(--syn-string); }
-.tok-comment { color: var(--syn-comment); font-style: italic; }
-.tok-number { color: var(--syn-number); }
-.tok-fn { color: var(--syn-fn); }
-.tok-type { color: var(--syn-type); }
-.tok-operator { color: var(--syn-operator); }
 
 /* ------------------------------------------------------------------ */
 /* Details / summary — ledger disclosures                              */

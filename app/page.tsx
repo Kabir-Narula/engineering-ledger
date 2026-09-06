@@ -5,31 +5,17 @@ import { ProjectLedger } from "@/components/project-ledger";
 import { ProofPaneShell } from "@/components/proof-pane-shell";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import type { ProjectWithCode } from "@/components/technical-proof";
-import { readProofExcerpt } from "@/lib/proof";
 import { projects } from "@/lib/projects";
 import { profile } from "@/lib/resume";
 
-export default async function Page() {
-  // Excerpts are read from disk at build/request time — verbatim slices
-  // of the public repositories they are attributed to.
-  const projectsWithCode: ProjectWithCode[] = await Promise.all(
-    projects.map(async (project) => {
-      const excerpt = await readProofExcerpt(
-        project.technicalProof.excerptFile,
-        project.technicalProof.language
-      );
-      return { ...project, code: excerpt.code };
-    })
-  );
-
+export default function Page() {
   return (
     <div id="top" className="min-h-screen">
       <SiteHeader />
       <main className="mx-auto max-w-[1720px]">
-        <ProofPaneShell projects={projectsWithCode}>
+        <ProofPaneShell projects={projects}>
           <Hero />
-          <ProjectLedger projects={projectsWithCode} />
+          <ProjectLedger projects={projects} />
           <ExperienceTimeline />
 
           <section
@@ -70,13 +56,6 @@ export default async function Page() {
                 className="rounded-sm border border-hairline-strong px-4 py-2 font-mono text-[11px] uppercase tracking-ledger text-ink-soft transition-colors hover:border-copper hover:text-copper"
               >
                 LinkedIn ↗
-              </a>
-              <a
-                href="/Kabir_Narula_Resume.pdf"
-                download="Kabir_Narula_Resume.pdf"
-                className="rounded-sm border border-hairline px-4 py-2 font-mono text-[11px] uppercase tracking-ledger text-ink-faint transition-colors hover:border-copper/60 hover:text-copper"
-              >
-                Résumé ↓
               </a>
             </div>
             <ContactForm />

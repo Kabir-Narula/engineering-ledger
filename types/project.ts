@@ -1,15 +1,8 @@
-export type ProofLanguage = "typescript" | "python";
-
 export type VisualKind = "sm2" | "collab" | null;
 
 export interface TechnicalProof {
-  /** Path of the excerpt file under content/proof/ */
-  excerptFile: string;
-  /** Real path of the source file inside its repository */
+  /** Real path of the key source file inside its repository — linked on GitHub */
   filePath: string;
-  language: ProofLanguage;
-  /** One-line note on why this artifact matters */
-  annotation: string;
 }
 
 export interface CaseStudy {

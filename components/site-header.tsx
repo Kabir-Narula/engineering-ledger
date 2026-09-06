@@ -1,3 +1,4 @@
+import { NavSpy } from "@/components/nav-spy";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -5,6 +6,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-paper/90 backdrop-blur-sm">
       <ScrollProgress />
+      <NavSpy />
       <div className="flex items-center gap-6 px-5 py-3.5 sm:px-10 lg:px-14 xl:px-20">
         <a
           href="#top"

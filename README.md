@@ -29,14 +29,13 @@ Environment Variables**.
 ## Structure
 
 - `app/` — routes, global tokens (`globals.css`), OG image, icon
-- `components/` — header/hero/case studies/proof pane/arch-flow/visuals
-- `lib/` — resume data, project data, validation, email provider, syntax highlighting
-- `content/proofs/` — verbatim source excerpts shown in each case study
+- `components/` — header/hero/case studies/proof pane/arch circuit/visuals
+- `lib/` — resume data, project data, validation, email provider
 - `public/shots/` — real app screenshots from each project's own README
 - `public/Kabir_Narula_Resume.pdf` — downloadable résumé
 
 ## Principles
 
 - No fabricated UI — schematics are labeled as schematics.
-- Every claim is backed by a public repository.
+- Every claim links to a public repository and a named source file.
 - Reduced-motion safe; keyboard accessible; print stylesheet included.

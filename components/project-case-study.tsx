@@ -1,5 +1,4 @@
 import { ArchFlow } from "@/components/arch-flow";
-import { CodePanel } from "@/components/code-panel";
 import { ProjectViewport } from "@/components/project-viewport";
 import type { ProjectWithCode } from "@/components/technical-proof";
 import { VisualCollab } from "@/components/visual-collab";
@@ -24,8 +23,19 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
     <article
       id={`project-${project.id}`}
       aria-labelledby={`project-${project.id}-title`}
-      className="scroll-mt-20 border-t border-hairline py-10 first:border-t-0 first:pt-0"
+      className="relative scroll-mt-20 border-t border-hairline py-10 first:border-t-0 first:pt-0"
     >
+      {/* Ledger watermark — the entry's folio number, set ghost-large
+          behind the content (z-layered, never over text) */}
+      <span
+        aria-hidden="true"
+        style={{ color: "var(--ink-ghost)" }}
+        className="pointer-events-none absolute -top-2 right-0 z-0 select-none font-display text-[6.5rem] font-medium leading-none"
+      >
+        {project.index}
+      </span>
+
+      <div className="relative z-[1]">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <span className="font-mono text-[11px] tracking-ledger text-copper">
           {project.index}
@@ -68,19 +78,6 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
       <p className="mt-2 max-w-measure text-[15px] leading-[1.75] text-ink-soft">
         {project.brief}
       </p>
-      {project.liveUrl ? (
-        <p className="mt-2 font-mono text-[11px] text-ink-faint">
-          live:{" "}
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-copper underline-offset-4 hover:underline"
-          >
-            {project.liveUrl.replace("https://", "")}
-          </a>
-        </p>
-      ) : null}
 
       {/* Mobile / tablet: the viewport travels with the narrative */}
       <div className="mt-6 lg:hidden">
@@ -131,42 +128,8 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
             <ArchFlow labels={project.archLabels} />
           </div>
         </details>
-
-        <details className="ledger group">
-          <summary className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-ledger text-ink-soft transition-colors hover:text-copper">
-            <span aria-hidden="true" className="ledger-marker text-copper">
-              ▸
-            </span>
-            Source artifact — {project.technicalProof.filePath}
-          </summary>
-          <div className="mt-4">
-            <CodePanel
-              code={project.code}
-              language={project.technicalProof.language}
-              filePath={project.technicalProof.filePath}
-              repositoryUrl={project.repositoryUrl}
-            />
-            <p className="mt-2 font-mono text-[10.5px] leading-relaxed text-ink-faint">
-              {project.technicalProof.annotation} Verbatim excerpt, abridged
-              where marked.
-            </p>
-          </div>
-        </details>
       </div>
-
-      <ul
-        aria-label={`Technologies used in ${project.name}`}
-        className="mt-6 flex flex-wrap gap-1.5"
-      >
-        {project.technologies.map((tech) => (
-          <li
-            key={tech}
-            className="rounded-sm border border-hairline bg-paper-raised px-2 py-1 font-mono text-[10.5px] tracking-wide text-ink-soft"
-          >
-            {tech}
-          </li>
-        ))}
-      </ul>
+      </div>
     </article>
   );
 }

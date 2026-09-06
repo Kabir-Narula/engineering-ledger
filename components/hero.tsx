@@ -62,16 +62,10 @@ export function Hero() {
           Download résumé ↓
         </a>
         <a
-          href="#ledger"
-          className="rounded-sm border border-hairline-strong px-4 py-2 font-mono text-[11px] uppercase tracking-ledger text-ink-soft transition-colors hover:border-copper hover:text-copper"
-        >
-          Selected work
-        </a>
-        <a
           href={profile.links.github}
           target="_blank"
           rel="noreferrer"
-          className="rounded-sm border border-hairline px-4 py-2 font-mono text-[11px] uppercase tracking-ledger text-ink-faint transition-colors hover:border-copper/60 hover:text-copper"
+          className="rounded-sm border border-hairline-strong px-4 py-2 font-mono text-[11px] uppercase tracking-ledger text-ink-soft transition-colors hover:border-copper hover:text-copper"
         >
           github ↗
         </a>
