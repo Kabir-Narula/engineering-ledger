@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { PaneNotes } from "@/components/pane-notes";
 import { ProjectViewport } from "@/components/project-viewport";
 import { VisualCollab } from "@/components/visual-collab";
 import { VisualSm2 } from "@/components/visual-sm2";
@@ -73,6 +74,15 @@ function ProjectPanel({ project }: { project: ProjectWithCode }) {
         <p className="mt-1 text-[12.5px] leading-relaxed text-ink-soft">
           {project.tagline}
         </p>
+        <p className="mt-1.5 font-mono text-[9.5px] uppercase tracking-ledger text-ink-faint">
+          {project.archLabels.length} nodes
+          {" · "}
+          {project.shots.length > 0 ? `${project.shots.length} shots` : "schematic"}
+          {project.technologies.length > 0
+            ? ` · ${project.technologies.length}-piece stack`
+            : ""}
+          {project.license ? ` · ${project.license}` : ""}
+        </p>
       </div>
 
       {project.shots.length > 0 ? (
@@ -93,6 +103,8 @@ function ProjectPanel({ project }: { project: ProjectWithCode }) {
           ? "Real interface, from the repository's own README."
           : "No fabricated UI — a schematic of the system's actual mechanism."}
       </p>
+
+      <PaneNotes notes={project.caseStudy.engineering} />
 
       <div>
         <p className="font-mono text-[9.5px] uppercase tracking-ledger text-ink-faint">

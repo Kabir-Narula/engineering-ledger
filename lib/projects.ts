@@ -20,6 +20,15 @@ export const projects: Project[] = [
     description:
       "Aggregates postings from 40+ sources, tracks every application to outcome, and compiles design-locked one-page LaTeX résumés per job — with verified recruiter contacts and outreach drafts.",
     repositoryUrl: "https://github.com/Kabir-Narula/jobhub",
+    brief:
+      "New-grad hunting in one city is scattered across dozens of ATS boards — so this runs the whole search: 40+ sources aggregated and deduped, every application tracked to outcome, and a design-locked one-page LaTeX résumé compiled per job, with verified humans to contact.",
+    archLabels: [
+      "Next.js UI",
+      "Postgres + Prisma",
+      "Tectonic LaTeX",
+      "Cron + Inngest",
+      "Hunter.io",
+    ],
     license: "MIT",
     technologies: [
       "Next.js 16",
@@ -69,6 +78,15 @@ export const projects: Project[] = [
     description:
       "Upload GLB assets, inspect them in a Three.js viewer, pin reviews to mesh surfaces, and track versions — with worker-derived polycounts and bounding boxes on every version.",
     repositoryUrl: "https://github.com/Kabir-Narula/Vertex_flow",
+    brief:
+      "3D teams have no code-review equivalent — versions in folders, feedback in chat screenshots. This is the fix: GLB assets versioned in a monorepo, uploads streaming to R2, a headless-Blender worker deriving polycounts, and reviews pinned to the mesh itself.",
+    archLabels: [
+      "Next.js + R3F",
+      "Fastify + tRPC",
+      "Blender worker",
+      "Drizzle db",
+      "CI tests",
+    ],
     technologies: [
       "Turborepo / pnpm",
       "Next.js 14",
@@ -119,6 +137,14 @@ export const projects: Project[] = [
     description:
       "Upload notes and Axom builds a concept knowledge graph, ranks what's likely to be tested, runs adaptive practice, and schedules spaced repetition. Wrong answers get a micro-lesson, not a red X.",
     repositoryUrl: "https://github.com/Kabir-Narula/Axom",
+    brief:
+      "Study tools quiz you and move on; this one models what you're about to forget. Documents become a concept graph, practice adapts across seven question types, and a faithful SM-2 core schedules every review — working fully offline, with an LLM as a bonus rather than a dependency.",
+    archLabels: [
+      "Next.js 16 UI",
+      "Prisma data",
+      "Resource search",
+      "Study planner",
+    ],
     technologies: [
       "Next.js 16",
       "React 19",
@@ -165,6 +191,14 @@ export const projects: Project[] = [
     description:
       "A daily-ritual journaling platform — intentions, pulse checks, CBT exercises, evening synthesis — with sentiment scoring and confidence-scored pattern detection over a 13-table PostgreSQL schema.",
     repositoryUrl: "https://github.com/Kabir-Narula/BetterMind",
+    brief:
+      "Mental-wellness ML with adult supervision: journals are anonymized before inference, detected patterns carry JSONB evidence and age out on a schedule, and a 13-table schema with middleware-gated JWT enforces ownership on every mutation.",
+    archLabels: [
+      "Next.js 14",
+      "13-table Neon",
+      "JWT middleware",
+      "Service layer",
+    ],
     liveUrl: "https://mindful-ai-dps.vercel.app/",
     technologies: [
       "Next.js 14",
@@ -212,6 +246,14 @@ export const projects: Project[] = [
     description:
       "Documents with realtime cursors and co-editing, workspaces with folders and trash recovery, Stripe subscriptions, and Supabase auth with row-level security — deployed on Railway.",
     repositoryUrl: "https://github.com/Kabir-Narula/Treminy",
+    brief:
+      "A document workspace only works if two people can edit at once without destroying each other's work — so Socket.IO rooms fan deltas and cursors out per document, Supabase row-level security guards every row, and Stripe webhooks drive entitlements.",
+    archLabels: [
+      "Hybrid Next.js",
+      "Supabase RLS",
+      "Socket.IO rooms",
+      "Stripe billing",
+    ],
     liveUrl: "https://treminy-production.up.railway.app/",
     license: "MIT",
     technologies: [

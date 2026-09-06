@@ -26,6 +26,14 @@ export interface Project {
   name: string;
   tagline: string;
   description: string;
+  /**
+   * One tight synthesis — what it is, why it exists, how it works — that
+   * replaces the old description/problem/approach trio on the page.
+   * Composed from those same fields; no new claims.
+   */
+  brief: string;
+  /** Short node labels for the animated architecture circuit */
+  archLabels: string[];
   repositoryUrl: string;
   liveUrl?: string;
   license?: string;

@@ -10,9 +10,9 @@ interface ProjectCaseStudyProps {
 }
 
 /**
- * One case study in the ledger, tuned for a recruiter's scan: pitch +
- * three engineering highlights up front; problem / approach / outcome
- * and the remaining notes sit behind a single "Context" disclosure.
+ * One case study in the ledger, tuned for a recruiter's scan: a single
+ * brief (what + why + how in one breath), three engineering highlights,
+ * a one-line outcome — everything else is visual or behind disclosure.
  * On mobile/tablet the product viewport travels inline with the
  * narrative; on desktop the sticky pane carries it instead. The real
  * source artifact sits behind an accessible disclosure in both layouts.
@@ -66,7 +66,7 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
       </header>
 
       <p className="mt-2 max-w-measure text-[15px] leading-[1.75] text-ink-soft">
-        {project.description}
+        {project.brief}
       </p>
       {project.liveUrl ? (
         <p className="mt-2 font-mono text-[11px] text-ink-faint">
@@ -125,38 +125,10 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
             <span aria-hidden="true" className="ledger-marker text-copper">
               ▸
             </span>
-            Context — problem · approach
-          </summary>
-          <div className="mt-4 space-y-4 pb-1 pl-6">
-            <ContextNote label="Problem">{caseStudy.problem}</ContextNote>
-            <ContextNote label="Approach">{caseStudy.approach}</ContextNote>
-            {caseStudy.engineering.length > 3 ? (
-              <ContextNote label="Further engineering">
-                <ul className="mt-1.5 space-y-2">
-                  {caseStudy.engineering.slice(3).map((point, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span
-                        aria-hidden="true"
-                        className="mt-[0.6em] h-px w-3 shrink-0 bg-copper/60"
-                      />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-              </ContextNote>
-            ) : null}
-          </div>
-        </details>
-
-        <details className="ledger group border-b border-hairline pb-3">
-          <summary className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-ledger text-ink-soft transition-colors hover:text-copper">
-            <span aria-hidden="true" className="ledger-marker text-copper">
-              ▸
-            </span>
-            Architecture — {caseStudy.architecture.length} layers · live diagram
+            Architecture — {project.archLabels.length} nodes · live circuit
           </summary>
           <div className="pl-6">
-            <ArchFlow layers={caseStudy.architecture} />
+            <ArchFlow labels={project.archLabels} />
           </div>
         </details>
 
@@ -196,25 +168,6 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
         ))}
       </ul>
     </article>
-  );
-}
-
-function ContextNote({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <p className="font-mono text-[10px] uppercase tracking-ledger text-ink-faint">
-        {label}
-      </p>
-      <div className="mt-1.5 max-w-measure text-[14px] leading-relaxed text-ink-soft">
-        {children}
-      </div>
-    </div>
   );
 }
 
